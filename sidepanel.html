@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 侧边栏助手</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <!-- 顶栏 -->
+  <header class="header">
+    <div class="header-left">
+      <span class="logo">🤖</span>
+      <span class="title">AI 助手</span>
+    </div>
+    <div class="header-right">
+      <button id="btnNewChat" class="icon-btn" title="新会话">➕</button>
+      <button id="btnHistory" class="icon-btn" title="对话历史">📋</button>
+      <button id="btnSettings" class="icon-btn" title="设置">⚙️</button>
+    </div>
+  </header>
+
+  <!-- 状态栏 -->
+  <div id="statusBar" class="status-bar hidden">
+    <span id="statusText">加载中...</span>
+    <button id="btnCancel" class="cancel-btn">✕ 取消</button>
+  </div>
+
+  <!-- 对话区域 -->
+  <div id="chatArea" class="chat-area">
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">🤖</div>
+      <h2>AI 侧边栏助手</h2>
+      <p class="welcome-hint">在下方输入问题开始对话</p>
+      <div class="welcome-tips" id="configStatus">
+        <p>📝 请先在设置页配置 API Key</p>
+      </div>
+    </div>
+    <div id="messagesContainer" class="messages"></div>
+  </div>
+
+  <!-- 搜索工具栏 -->
+  <div class="search-toolbar" id="searchToolbar">
+    <button id="btnToggleSearch" class="search-toggle-btn" title="开启后 AI 会先搜索再回答">
+      <span class="search-icon">🔍</span>
+      <span class="search-text">联网搜索</span>
+      <span class="search-switch" id="searchSwitch">◉</span>
+    </button>
+    <select id="modelSelector" class="model-selector" title="切换模型"></select>
+  </div>
+
+  <!-- 输入区 -->
+  <div class="input-area">
+    <textarea
+      id="inputBox"
+      class="input-box"
+      placeholder="输入问题... (Enter 发送, Ctrl+Enter 换行)"
+      rows="3"
+    ></textarea>
+    <button id="btnSend" class="send-btn" title="发送">➤</button>
+  </div>
+
+  <!-- 历史记录面板 -->
+  <div id="historyPanel" class="history-panel hidden">
+    <div class="history-header">
+      <span>📋 对话历史</span>
+      <div>
+        <button id="btnClearHistory" class="icon-btn small" title="清空历史">🗑️</button>
+        <button id="btnCloseHistory" class="icon-btn small" title="关闭">✕</button>
+      </div>
+    </div>
+    <div id="historyList" class="history-list"></div>
+  </div>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>
