@@ -1,11 +1,13 @@
-# 🤖 AI 侧边栏助手
+<img width="2533" height="1278" alt="image" src="https://github.com/user-attachments/assets/b3818e4a-39e3-439c-84c6-fb43af9e490d" /># 🤖 AI 侧边栏助手
 
 一个 Chrome 扩展，在任何网页的侧边栏中提供一个 AI 助手。支持 **OpenAI / Claude / Gemini** 多协议 API 和联网搜索增强（RAG）。
 
 > 当前版本：**v2.2.0**（基于 v1.0.0 升级：多协议、安全加固、新功能、模型自动识别）
 
 ##预览
-![Uploading image.png…]()
+<img width="2533" height="1278" alt="屏幕截图 2026-08-10 180349" src="https://github.com/user-attachments/assets/45913d51-b37e-40a8-a143-408d17d6818b" />
+
+
 
 
 ## 功能
