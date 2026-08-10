@@ -1,3 +1,6 @@
 node_modules/
 *.log
 .DS_Store
+
+# 旧仓库本地克隆，不随新项目推送
+chrome--ai-/
