@@ -637,7 +637,7 @@ html, body {
   resize: none;
   outline: none;
   transition: border-color 0.2s;
-  max-height: 120px;
+  overflow-y: auto;
   line-height: 1.5;
 }
 

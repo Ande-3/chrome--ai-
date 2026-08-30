@@ -18,7 +18,7 @@ const state = {
   modelList: null,        // 从 API 拉取的模型列表，null=未获取到
   hiddenModels: [],       // 用户隐藏的模型 ID（持久化）
   customModels: [],       // 本次会话手动添加的自定义模型
-  inputMaxHeight: 120,    // 输入框允许的最大高度（可拖动调节）
+  inputHeight: 90,        // 输入框基准高度（可拖动调节）
 };
 
 const md = new MarkdownRenderer();
@@ -861,51 +861,56 @@ function scrollToBottom(force = false) {
   }
 }
 
-function autoResizeInput() {
-  els.inputBox.style.height = 'auto';
-  els.inputBox.style.height = Math.min(els.inputBox.scrollHeight, state.inputMaxHeight) + 'px';
-}
-
 // ─── 输入框高度调节 ──────────────────────────────────────
-/** 从本地缓存恢复输入框最大高度 */
+/** 输入框可调范围的上下限 */
+const INPUT_MIN = 40;
+const INPUT_MAX = 600;
+
+/** 从本地缓存恢复输入框基准高度 */
 function restoreInputHeight() {
   const saved = parseInt(localStorage.getItem('ai_sidebar_input_h'), 10);
   if (saved && Number.isFinite(saved)) {
-    state.inputMaxHeight = clampInputHeight(saved);
+    state.inputHeight = clampInputHeight(saved);
   }
-  els.inputBox.style.maxHeight = state.inputMaxHeight + 'px';
+  els.inputBox.style.height = state.inputHeight + 'px';
 }
 
 function clampInputHeight(v) {
-  return Math.max(60, Math.min(400, Math.round(v || 120)));
+  return Math.max(INPUT_MIN, Math.min(INPUT_MAX, Math.round(v || 90)));
 }
 
-/** 初始化输入区拖动手柄：拖动调整输入框允许的最大高度 */
+/** 应用输入框实际高度：内容不足时保持基准高度，内容多时自动扩展 */
+function autoResizeInput() {
+  els.inputBox.style.height = 'auto';
+  const content = Math.min(els.inputBox.scrollHeight, INPUT_MAX);
+  els.inputBox.style.height = Math.max(state.inputHeight, content) + 'px';
+}
+
+/** 初始化输入区拖动手柄：拖动直接调节输入框实际高度 */
 function initInputResizer() {
   const resizer = els.inputResizer;
   if (!resizer) return;
 
   let startY = 0;
-  let startMax = 0;
+  let startHeight = 0;
 
   const onDrag = (e) => {
     const dy = startY - e.clientY;
-    const next = clampInputHeight(startMax + dy);
-    state.inputMaxHeight = next;
-    els.inputBox.style.maxHeight = next + 'px';
-    autoResizeInput();
+    state.inputHeight = clampInputHeight(startHeight + dy);
+    // 直接设置实际高度，拖动即时可见（1px 拖动 = 1px 变化）
+    els.inputBox.style.height = state.inputHeight + 'px';
   };
 
   const onDragEnd = () => {
     resizer.classList.remove('dragging');
     document.removeEventListener('mousemove', onDrag);
     document.removeEventListener('mouseup', onDragEnd);
-    localStorage.setItem('ai_sidebar_input_h', String(state.inputMaxHeight));
+    localStorage.setItem('ai_sidebar_input_h', String(state.inputHeight));
   };
 
   resizer.addEventListener('mousedown', (e) => {
     startY = e.clientY;
-    startMax = state.inputMaxHeight;
+    startHeight = state.inputHeight;
     resizer.classList.add('dragging');
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', onDragEnd);
