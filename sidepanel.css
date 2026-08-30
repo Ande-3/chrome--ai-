@@ -587,6 +587,33 @@ html, body {
   cursor: default;
 }
 
+/* ─── 输入区高度调节手柄 ────────────────────────────────── */
+.input-resizer {
+  flex-shrink: 0;
+  height: 12px;
+  cursor: ns-resize;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  user-select: none;
+  touch-action: none;
+}
+
+.input-resizer::before {
+  content: '';
+  width: 56px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.2s;
+}
+
+.input-resizer:hover::before,
+.input-resizer.dragging::before {
+  background: var(--accent);
+}
+
 /* ─── 输入区 ────────────────────────────────────────────── */
 .input-area {
   display: flex;
