@@ -5,7 +5,10 @@
   padding: 0;
 }
 
-:root {
+/* ─── 主题变量（深色 / 浅色） ──────────────────────────── */
+/* 默认即深色主题，未设置 data-theme 时使用深色，避免闪烁 */
+:root,
+:root[data-theme="dark"] {
   --bg: #1a1a2e;
   --bg-secondary: #16213e;
   --bg-card: #1e2a4a;
@@ -18,8 +21,41 @@
   --ai-msg: #1e2a4a;
   --danger: #ff5555;
   --success: #50fa7b;
-  --radius: 8px;
+  --accent-soft: rgba(74, 158, 255, 0.12);
+  --accent-soft2: rgba(74, 158, 255, 0.08);
+  --accent-soft3: rgba(74, 158, 255, 0.06);
+  --code-inline-bg: rgba(255, 255, 255, 0.08);
+  --code-block-bg: rgba(0, 0, 0, 0.3);
+  --code-block-text: #e6edf3;
   --shadow: 0 2px 8px rgba(0,0,0,0.3);
+  --overlay: rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f7fa;
+  --bg-secondary: #e9edf3;
+  --bg-card: #ffffff;
+  --text: #1c2733;
+  --text-secondary: #5b6b7b;
+  --accent: #2b7fd4;
+  --accent-hover: #1f6fc0;
+  --border: #d3dae3;
+  --user-msg: #d3e8ff;
+  --ai-msg: #ffffff;
+  --danger: #d94f4f;
+  --success: #1f9e55;
+  --accent-soft: rgba(43, 127, 212, 0.14);
+  --accent-soft2: rgba(43, 127, 212, 0.10);
+  --accent-soft3: rgba(43, 127, 212, 0.07);
+  --code-inline-bg: rgba(0, 0, 0, 0.07);
+  --code-block-bg: #2b3440;
+  --code-block-text: #e8edf2;
+  --shadow: 0 2px 8px rgba(40, 60, 90, 0.15);
+  --overlay: rgba(0, 0, 0, 0.35);
+}
+
+:root {
+  --radius: 8px;
   --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
   --font-mono: "Cascadia Code", "Fira Code", Consolas, monospace;
 }
@@ -126,7 +162,7 @@ html, body {
 }
 
 .search-toggle-btn.active {
-  background: rgba(74, 158, 255, 0.12);
+  background: var(--accent-soft);
   border-color: var(--accent);
   color: var(--accent);
 }
@@ -395,13 +431,13 @@ html, body {
   border-left: 3px solid var(--accent);
   padding: 4px 12px;
   margin: 8px 0;
-  background: rgba(74, 158, 255, 0.08);
+  background: var(--accent-soft2);
   border-radius: 0 var(--radius) var(--radius) 0;
   color: var(--text-secondary);
 }
 
 .message-bubble code {
-  background: rgba(255,255,255,0.08);
+  background: var(--code-inline-bg);
   padding: 1px 6px;
   border-radius: 3px;
   font-family: var(--font-mono);
@@ -409,7 +445,7 @@ html, body {
 }
 
 .message-bubble pre {
-  background: rgba(0,0,0,0.3);
+  background: var(--code-block-bg);
   padding: 12px;
   border-radius: var(--radius);
   overflow-x: auto;
@@ -423,6 +459,7 @@ html, body {
   border-radius: 0;
   font-size: 12px;
   line-height: 1.5;
+  color: var(--code-block-text);
 }
 
 .message-bubble .code-copy {
@@ -542,7 +579,7 @@ html, body {
 .regenerate-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
-  background: rgba(74, 158, 255, 0.08);
+  background: var(--accent-soft2);
 }
 
 .msg-action-btn:disabled {
@@ -668,7 +705,7 @@ html, body {
 }
 
 .history-item.active {
-  background: rgba(74, 158, 255, 0.12);
+  background: var(--accent-soft);
   border: 1px solid var(--accent);
 }
 
@@ -720,7 +757,7 @@ html, body {
 .search-sources {
   margin-top: 8px;
   padding: 6px 10px;
-  background: rgba(74, 158, 255, 0.06);
+  background: var(--accent-soft3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   font-size: 11px;
@@ -836,7 +873,7 @@ body {
 .model-manager-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;

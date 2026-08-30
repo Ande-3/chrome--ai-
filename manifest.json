@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "AI 侧边栏助手",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "侧边栏 AI 助手，支持 OpenAI / Claude / Gemini 多协议 API、联网搜索增强、页面上下文",
   "minimum_chrome_version": "114",
   "permissions": [

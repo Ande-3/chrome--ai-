@@ -22,6 +22,7 @@ const fields = {
   contextMenu: $('contextMenu'),
   defaultSearchMode: $('defaultSearchMode'),
   maxContextMessages: $('maxContextMessages'),
+  themeSelect: $('themeSelect'),
   btnReset: $('btnReset'),
   settingsForm: $('settingsForm'),
   toast: $('toast'),
@@ -55,6 +56,12 @@ function esc(text) {
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
+/** 应用主题到 <html data-theme> */
+function applyTheme(theme) {
+  const mode = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', mode);
+}
+
 // ─── 初始化 ────────────────────────────────────────────────
 async function init() {
   const config = await getConfig();
@@ -71,6 +78,8 @@ async function init() {
   fields.contextMenu.checked = config.general.contextMenu !== false;
   fields.defaultSearchMode.checked = config.general.searchMode || false;
   fields.maxContextMessages.value = config.general.maxContextMessages || 20;
+  fields.themeSelect.value = config.general.theme === 'light' ? 'light' : 'dark';
+  applyTheme(fields.themeSelect.value);
 
   // 搜索次数
   const count = config.search.count;
@@ -188,6 +197,11 @@ function bindEvents() {
     fields.tempValue.textContent = e.target.value;
   });
 
+  // 主题实时预览
+  fields.themeSelect.addEventListener('change', (e) => {
+    applyTheme(e.target.value);
+  });
+
   // 添加搜索源
   fields.btnAddSource.addEventListener('click', () => {
     const sources = collectSources();
@@ -237,6 +251,7 @@ async function saveSettings() {
       searchMode: fields.defaultSearchMode.checked,
       systemPrompt: fields.systemPrompt.value.trim() || '你是一个有帮助的 AI 助手。请用中文回答。',
       maxContextMessages: parseInt(fields.maxContextMessages.value) || 20,
+      theme: fields.themeSelect.value === 'light' ? 'light' : 'dark',
     },
   };
 

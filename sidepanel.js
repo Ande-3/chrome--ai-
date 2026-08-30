@@ -35,6 +35,7 @@ const els = {
   btnHistory: $('btnHistory'),
   btnPageContext: $('btnPageContext'),
   btnExportChat: $('btnExportChat'),
+  btnToggleTheme: $('btnToggleTheme'),
   btnCancel: $('btnCancel'),
   btnClearHistory: $('btnClearHistory'),
   btnCloseHistory: $('btnCloseHistory'),
@@ -78,6 +79,7 @@ async function init() {
   const config = await sendMessage({ type: 'get-config' });
   state.searchMode = config.general?.searchMode || false;
   state.hiddenModels = config.general?.hiddenModels || [];
+  applyTheme(config.general?.theme || 'dark');
   updateSearchToggleUI();
   updateConfigStatus(config);
 
@@ -102,6 +104,7 @@ function handleStorageChanged(changes, area) {
   const cfg = changes.config.newValue;
   state.defaultModel = cfg?.llm?.model || state.defaultModel;
   state.hiddenModels = cfg?.general?.hiddenModels || [];
+  applyTheme(cfg?.general?.theme || 'dark');
   buildModelOptions(state.defaultModel, state.modelList || FALLBACK_MODELS);
   restoreSelection(state.selectedModel);
 }
@@ -344,6 +347,8 @@ function bindEvents() {
     chrome.runtime.openOptionsPage();
   });
 
+  els.btnToggleTheme.addEventListener('click', toggleTheme);
+
   els.btnNewChat.addEventListener('click', newSession);
 
   els.btnHistory.addEventListener('click', toggleHistory);
@@ -437,6 +442,21 @@ async function handleUserMessage() {
     }
   } catch (err) {
     console.error('发送消息失败:', err);
+    // 发送失败：恢复输入框内容并终止加载态
+    els.inputBox.value = text;
+    autoResizeInput();
+    state.isStreaming = false;
+    state.streamId = null;
+    els.btnSend.disabled = false;
+    els.statusBar.classList.add('hidden');
+    const aiMessages = els.messagesContainer.querySelectorAll('.message.ai');
+    if (aiMessages.length > 0) {
+      const lastMsg = aiMessages[aiMessages.length - 1];
+      const bubble = lastMsg.querySelector('.message-bubble');
+      if (bubble) {
+        bubble.innerHTML = `<div class="error-message">❌ ${escapeHtml(err.message || '发送失败')}</div>`;
+      }
+    }
   }
 }
 
@@ -849,6 +869,27 @@ function updateSearchToggleUI() {
     els.btnToggleSearch.classList.remove('active');
     els.searchSwitch.textContent = '○';
   }
+}
+
+// ─── 主题切换 ──────────────────────────────────────────────
+/** 应用主题到 <html data-theme>，并更新切换按钮图标 */
+function applyTheme(theme) {
+  const mode = theme === 'light' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', mode);
+  if (els.btnToggleTheme) {
+    els.btnToggleTheme.textContent = mode === 'dark' ? '🌙' : '☀️';
+    els.btnToggleTheme.title = mode === 'dark' ? '切换为浅色主题' : '切换为深色主题';
+  }
+}
+
+/** 在深色 / 浅色主题之间切换并持久化 */
+async function toggleTheme() {
+  const config = await sendMessage({ type: 'get-config' });
+  const next = config.general.theme === 'light' ? 'dark' : 'light';
+  config.general.theme = next;
+  await sendMessage({ type: 'save-config', config });
+  applyTheme(next);
+  showToast(next === 'light' ? '☀️ 已切换为浅色主题' : '🌙 已切换为深色主题');
 }
 
 function updateConfigStatus(config) {
